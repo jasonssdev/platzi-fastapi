@@ -1,4 +1,5 @@
 from typing import Annotated
+from contextlib import asynccontextmanager
 from sqlmodel import Session, create_engine, SQLModel
 from fastapi import Depends, FastAPI
 
@@ -8,7 +9,9 @@ sqlite_path = f"sqlite:///{sqlite_name}"
 engine = create_engine(sqlite_path)
 
 
-def create_tables(app: FastAPI):
+@asynccontextmanager
+async def create_tables(app: FastAPI):
+    """Create database tables on startup."""
     SQLModel.metadata.create_all(engine)
     yield
 
